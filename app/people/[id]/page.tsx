@@ -1,6 +1,6 @@
 'use client'
 
-import { createResourceDetailPage } from '@/components/ResourceDetailPage'
+import { createResourceDetailPage, relation } from '@/components/ResourceDetailPage'
 import { People } from '../types'
 import { starshipItem } from '@/app/starships/starshipItem'
 import { vehicleItem } from '@/app/vehicles/vehicleItem'
@@ -21,9 +21,9 @@ export default createResourceDetailPage<People>({
         ['Skin color', sanitizeProp(person.skin_color, 'unknown skin color')],
     ],
     relations: [
-        { label: 'Starships', getUrls: (p) => p.starships, renderItem: starshipItem },
-        { label: 'Vehicles', getUrls: (p) => p.vehicles, renderItem: vehicleItem },
-        { label: 'Films', getUrls: (p) => p.films, renderItem: filmItem },
-        { label: 'Species', getUrls: (p) => p.species, renderItem: speciesItem },
+        relation({ label: 'Starships', getUrls: (p: People) => p.starships, renderItem: starshipItem }),
+        relation({ label: 'Vehicles', getUrls: (p: People) => p.vehicles, renderItem: vehicleItem }),
+        relation({ label: 'Films', getUrls: (p: People) => p.films, renderItem: filmItem }),
+        relation({ label: 'Species', getUrls: (p: People) => p.species, renderItem: speciesItem }),
     ],
 })

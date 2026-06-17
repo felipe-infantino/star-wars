@@ -1,6 +1,6 @@
 'use client'
 
-import { createResourceDetailPage } from '@/components/ResourceDetailPage'
+import { createResourceDetailPage, relation } from '@/components/ResourceDetailPage'
 import { Planet } from '../types'
 import { peopleItem } from '@/app/people/peopleItem'
 import { filmItem } from '@/app/films/filmItem'
@@ -20,7 +20,7 @@ export default createResourceDetailPage<Planet>({
         ['Rotation period', sanitizeProp(planet.rotation_period, 'unknown rotation period', ' hours')],
     ],
     relations: [
-        { label: 'Residents', getUrls: (p) => p.residents, renderItem: peopleItem },
-        { label: 'Films', getUrls: (p) => p.films, renderItem: filmItem },
+        relation({ label: 'Residents', getUrls: (p: Planet) => p.residents, renderItem: peopleItem }),
+        relation({ label: 'Films', getUrls: (p: Planet) => p.films, renderItem: filmItem }),
     ],
 })

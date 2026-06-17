@@ -1,6 +1,6 @@
 'use client'
 
-import { createResourceDetailPage } from '@/components/ResourceDetailPage'
+import { createResourceDetailPage, relation } from '@/components/ResourceDetailPage'
 import { Vehicle } from '../types'
 import { peopleItem } from '@/app/people/peopleItem'
 import { filmItem } from '@/app/films/filmItem'
@@ -22,7 +22,7 @@ export default createResourceDetailPage<Vehicle>({
         ['Consumables', sanitizeProp(vehicle.consumables, 'unknown consumables')],
     ],
     relations: [
-        { label: 'Pilots', getUrls: (v) => v.pilots, renderItem: peopleItem },
-        { label: 'Films', getUrls: (v) => v.films, renderItem: filmItem },
+        relation({ label: 'Pilots', getUrls: (v: Vehicle) => v.pilots, renderItem: peopleItem }),
+        relation({ label: 'Films', getUrls: (v: Vehicle) => v.films, renderItem: filmItem }),
     ],
 })

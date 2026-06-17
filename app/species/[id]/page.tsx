@@ -1,6 +1,6 @@
 'use client'
 
-import { createResourceDetailPage } from '@/components/ResourceDetailPage'
+import { createResourceDetailPage, relation } from '@/components/ResourceDetailPage'
 import { Species } from '../types'
 import { peopleItem } from '@/app/people/peopleItem'
 import { filmItem } from '@/app/films/filmItem'
@@ -20,7 +20,7 @@ export default createResourceDetailPage<Species>({
         ['Language', sanitizeProp(species.language, 'unknown language')],
     ],
     relations: [
-        { label: 'People', getUrls: (s) => s.people, renderItem: peopleItem },
-        { label: 'Films', getUrls: (s) => s.films, renderItem: filmItem },
+        relation({ label: 'People', getUrls: (s: Species) => s.people, renderItem: peopleItem }),
+        relation({ label: 'Films', getUrls: (s: Species) => s.films, renderItem: filmItem }),
     ],
 })

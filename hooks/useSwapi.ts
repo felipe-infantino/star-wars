@@ -25,7 +25,7 @@ export function useSwapiResources<T>(urls: string[]) {
       queryFn: () => fetchSwapiByUrl<T>(url),
     })),
     combine: (results) => ({
-      items: results.map((r) => r.data).filter((d): d is T => d !== undefined),
+      items: results.map((r) => r.data),
       isLoading: results.some((r) => r.isLoading),
       isError: results.some((r) => r.isError),
     }),

@@ -1,6 +1,6 @@
 'use client'
 
-import { createResourceDetailPage } from '@/components/ResourceDetailPage'
+import { createResourceDetailPage, relation } from '@/components/ResourceDetailPage'
 import { Starship } from '../types'
 import { peopleItem } from '@/app/people/peopleItem'
 import { filmItem } from '@/app/films/filmItem'
@@ -24,7 +24,7 @@ export default createResourceDetailPage<Starship>({
         ['MGLT', sanitizeProp(starship.MGLT, 'unknown MGLT')],
     ],
     relations: [
-        { label: 'Pilots', getUrls: (s) => s.pilots, renderItem: peopleItem },
-        { label: 'Films', getUrls: (s) => s.films, renderItem: filmItem },
+        relation({ label: 'Pilots', getUrls: (s: Starship) => s.pilots, renderItem: peopleItem }),
+        relation({ label: 'Films', getUrls: (s: Starship) => s.films, renderItem: filmItem }),
     ],
 })

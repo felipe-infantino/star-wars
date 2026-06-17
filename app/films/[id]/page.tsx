@@ -1,6 +1,6 @@
 'use client'
 
-import { createResourceDetailPage } from '@/components/ResourceDetailPage'
+import { createResourceDetailPage, relation } from '@/components/ResourceDetailPage'
 import { Film } from '../types'
 import { peopleItem } from '@/app/people/peopleItem'
 import { planetItem } from '@/app/planets/planetItem'
@@ -20,10 +20,10 @@ export default createResourceDetailPage<Film>({
         ['Release date', sanitizeProp(film.release_date, 'unknown release date')],
     ],
     relations: [
-        { label: 'Characters', getUrls: (f) => f.characters, renderItem: peopleItem },
-        { label: 'Planets', getUrls: (f) => f.planets, renderItem: planetItem },
-        { label: 'Starships', getUrls: (f) => f.starships, renderItem: starshipItem },
-        { label: 'Vehicles', getUrls: (f) => f.vehicles, renderItem: vehicleItem },
-        { label: 'Species', getUrls: (f) => f.species, renderItem: speciesItem },
+        relation({ label: 'Characters', getUrls: (f: Film) => f.characters, renderItem: peopleItem }),
+        relation({ label: 'Planets', getUrls: (f: Film) => f.planets, renderItem: planetItem }),
+        relation({ label: 'Starships', getUrls: (f: Film) => f.starships, renderItem: starshipItem }),
+        relation({ label: 'Vehicles', getUrls: (f: Film) => f.vehicles, renderItem: vehicleItem }),
+        relation({ label: 'Species', getUrls: (f: Film) => f.species, renderItem: speciesItem }),
     ],
 })
