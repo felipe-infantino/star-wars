@@ -4,23 +4,24 @@ import { createResourceDetailPage } from '@/components/ResourceDetailPage'
 import { Starship } from '../types'
 import { peopleItem } from '@/app/people/peopleItem'
 import { filmItem } from '@/app/films/filmItem'
+import { sanitizeProp } from '@/lib/sanitize'
 
 export default createResourceDetailPage<Starship>({
     path: '/starships/',
-    getTitle: (starship) => starship.name,
+    getTitle: (starship) => sanitizeProp(starship.name, 'Unknown starship'),
     getProps: (starship) => [
-        ['Model', starship.model],
-        ['Starship class', starship.starship_class],
-        ['Manufacturer', starship.manufacturer],
-        ['Cost', `${starship.cost_in_credits} credits`],
-        ['Length', `${starship.length} m`],
-        ['Max atmosphering speed', starship.max_atmosphering_speed],
-        ['Crew', starship.crew],
-        ['Passengers', starship.passengers],
-        ['Cargo capacity', starship.cargo_capacity],
-        ['Consumables', starship.consumables],
-        ['Hyperdrive rating', starship.hyperdrive_rating],
-        ['MGLT', starship.MGLT],
+        ['Model', sanitizeProp(starship.model, 'unknown model')],
+        ['Starship class', sanitizeProp(starship.starship_class, 'unknown class')],
+        ['Manufacturer', sanitizeProp(starship.manufacturer, 'unknown manufacturer')],
+        ['Cost', sanitizeProp(starship.cost_in_credits, 'unknown cost', ' credits')],
+        ['Length', sanitizeProp(starship.length, 'unknown length', ' m')],
+        ['Max atmosphering speed', sanitizeProp(starship.max_atmosphering_speed, 'unknown speed')],
+        ['Crew', sanitizeProp(starship.crew, 'unknown crew')],
+        ['Passengers', sanitizeProp(starship.passengers, 'unknown passengers')],
+        ['Cargo capacity', sanitizeProp(starship.cargo_capacity, 'unknown cargo capacity')],
+        ['Consumables', sanitizeProp(starship.consumables, 'unknown consumables')],
+        ['Hyperdrive rating', sanitizeProp(starship.hyperdrive_rating, 'unknown hyperdrive rating')],
+        ['MGLT', sanitizeProp(starship.MGLT, 'unknown MGLT')],
     ],
     relations: [
         { label: 'Pilots', getUrls: (s) => s.pilots, renderItem: peopleItem },
