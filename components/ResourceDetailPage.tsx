@@ -2,6 +2,7 @@
 
 import { useParams } from 'next/navigation'
 import BackButton from '@/components/BackButton'
+import Loading from '@/components/Loading'
 import { PropsGrid } from '@/components/PropsGrid'
 import { ResourceAccordion } from '@/components/ResourceAccordion'
 import { useSwapiResource, useSwapiResources } from '@/hooks/useSwapi'
@@ -45,7 +46,7 @@ export function createResourceDetailPage<T>({
         if (isLoading) {
             return (
                 <main className="mx-auto w-full max-w-3xl px-6 py-12">
-                    <p className="text-sm text-zinc-500 dark:text-zinc-400">Loading…</p>
+                    <Loading />
                 </main>
             )
         }

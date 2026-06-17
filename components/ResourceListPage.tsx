@@ -4,6 +4,7 @@ import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import PaginatedList from '@/components/PaginatedList'
 import SearchBar from '@/components/SearchBar'
+import Loading from '@/components/Loading'
 import { useSwapiList } from '@/hooks/useSwapi'
 
 type Config<T> = {
@@ -24,7 +25,7 @@ export function createResourceListPage<T>({ title, path, renderItem }: Config<T>
             <main className="mx-auto w-full max-w-3xl px-6 py-12">
                 <h1 className="mb-8 text-3xl font-semibold tracking-tight">{title}</h1>
                 <SearchBar defaultValue={searchStr} />
-                {isLoading && <p className="text-sm text-zinc-500 dark:text-zinc-400">Loading…</p>}
+                {isLoading && <Loading />}
                 {isError && (
                     <p className="text-sm text-red-600 dark:text-red-400">Failed to load {title.toLowerCase()}.</p>
                 )}

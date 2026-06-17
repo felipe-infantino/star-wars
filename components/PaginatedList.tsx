@@ -1,7 +1,22 @@
+'use client'
+
 import Link from 'next/link'
+import { motion } from 'motion/react'
 import { PaginatedResponse } from '@/lib/swapi'
 
 const PAGE_SIZE = 10
+
+const listVariants = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.05 },
+  },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 8 },
+  show: { opacity: 1, y: 0 },
+}
 
 type Props<T> = {
   data: PaginatedResponse<T>
@@ -26,17 +41,25 @@ export default function PaginatedList<T>({ data, currentPage, search, renderItem
         {data.count} results — page {currentPage} of {totalPages}
       </p>
 
-      <ul className="flex flex-col gap-3">
+      <motion.ul
+        key={`${currentPage}-${search ?? ''}`}
+        className="flex flex-col gap-3"
+        variants={listVariants}
+        initial="hidden"
+        animate="show"
+      >
         {data.results.map((item, i) => (
-          <li key={i}>{renderItem(item)}</li>
+          <motion.li key={i} variants={itemVariants}>
+            {renderItem(item)}
+          </motion.li>
         ))}
-      </ul>
+      </motion.ul>
 
       <div className="flex items-center justify-between">
         {currentPage > 1 ? (
           <Link
             href={pageHref(currentPage - 1)}
-            className="rounded-full border border-black/[.08] px-4 py-2 text-sm font-medium transition-colors hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
+            className="rounded-full border px-4 py-2 text-sm font-medium transition-colors hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
           >
             ← Previous
           </Link>
@@ -47,7 +70,7 @@ export default function PaginatedList<T>({ data, currentPage, search, renderItem
         {data.next ? (
           <Link
             href={pageHref(currentPage + 1)}
-            className="rounded-full border border-black/[.08] px-4 py-2 text-sm font-medium transition-colors hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
+            className="rounded-full border px-4 py-2 text-sm font-medium transition-colors hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
           >
             Next →
           </Link>
