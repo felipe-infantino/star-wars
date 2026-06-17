@@ -13,14 +13,14 @@ type Config<T> = {
     renderItem: (item: T) => React.ReactNode
 }
 
-export const createResourceListPage = <T,>({ title, path, renderItem }: Config<T>) => () => {
-    const searchParams = useSearchParams()
-    const currentPage = Number(searchParams.get('page') ?? '1')
-    const searchStr = searchParams.get('search') ?? undefined
+export const createResourceListPage = <T,>({ title, path, renderItem }: Config<T>) => {
+    const ResourceList = () => {
+        const searchParams = useSearchParams()
+        const currentPage = Number(searchParams.get('page') ?? '1')
+        const searchStr = searchParams.get('search') ?? undefined
 
-    const { data, isLoading, isError } = useSwapiList<T>(path, currentPage, searchStr)
-    return (
-        <Suspense>
+        const { data, isLoading, isError } = useSwapiList<T>(path, currentPage, searchStr)
+        return (
             <main className="mx-auto w-full max-w-3xl px-6 py-12">
                 <h1 className="mb-8 text-3xl font-semibold tracking-tight">{title}</h1>
                 <SearchBar defaultValue={searchStr} />
@@ -37,6 +37,12 @@ export const createResourceListPage = <T,>({ title, path, renderItem }: Config<T
                     />
                 )}
             </main>
+        )
+    }
+
+    return () => (
+        <Suspense fallback={<Loading />}>
+            <ResourceList />
         </Suspense>
     )
 }
