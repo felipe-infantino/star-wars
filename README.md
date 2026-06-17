@@ -2,6 +2,10 @@
 
 A SWAPI browser to explore every Star Wars resource — films, people, planets, species, starships, and vehicles — with search, pagination, and full cross-resource navigation through their relationships.
 
+## Live demo
+
+- [https://star-wars-dereal.vercel.app/](https://star-wars-dereal.vercel.app/)
+
 ## Tech Stack
 
 - **Next.js 16.2.9** (App Router) · **React 19.2.4** · **TypeScript** · **Tailwind CSS v4**
