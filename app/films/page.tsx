@@ -1,3 +1,5 @@
+'use client'
+
 import { createResourceListPage } from '@/components/ResourceListPage'
 import { Film } from './types'
 import { filmItem } from './filmItem'

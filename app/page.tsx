@@ -1,5 +1,3 @@
-import { ProductionServerSideFetch } from '@/components/ProductionServerSideFetch'
-import { ProductionTestFetch } from '@/components/ProductionTestFetch'
 import Link from 'next/link'
 
 const routes = [
@@ -15,10 +13,6 @@ export default function Home() {
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-12">
       <h1 className="mb-8 text-3xl font-semibold tracking-tight">Star Wars</h1>
-      <div className="mb-8 flex flex-col gap-4">
-        <ProductionTestFetch />
-        <ProductionServerSideFetch />
-      </div>
       <ul className="flex flex-col gap-3">
         {routes.map(({ href, label }) => (
           <li key={href}>

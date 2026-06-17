@@ -1,7 +1,10 @@
+'use client'
+
+import { Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import PaginatedList from '@/components/PaginatedList'
 import SearchBar from '@/components/SearchBar'
-import { fetchSwapi } from '@/lib/swapi'
-import { parseListSearchParams, SearchParams } from '@/lib/searchParams'
+import { useSwapiList } from '@/hooks/useSwapi'
 
 type Config<T> = {
     title: string
@@ -10,21 +13,38 @@ type Config<T> = {
 }
 
 export function createResourceListPage<T>({ title, path, renderItem }: Config<T>) {
-    return async function ResourceListPage({ searchParams }: { searchParams: SearchParams }) {
-        const { currentPage, searchStr } = await parseListSearchParams(searchParams)
-        const data = await fetchSwapi<T>(path, currentPage, searchStr)
+    function ResourceList() {
+        const searchParams = useSearchParams()
+        const currentPage = Number(searchParams.get('page') ?? '1')
+        const searchStr = searchParams.get('search') ?? undefined
+
+        const { data, isLoading, isError } = useSwapiList<T>(path, currentPage, searchStr)
 
         return (
             <main className="mx-auto w-full max-w-3xl px-6 py-12">
                 <h1 className="mb-8 text-3xl font-semibold tracking-tight">{title}</h1>
                 <SearchBar defaultValue={searchStr} />
-                <PaginatedList
-                    data={data}
-                    currentPage={currentPage}
-                    search={searchStr}
-                    renderItem={renderItem}
-                />
+                {isLoading && <p className="text-sm text-zinc-500 dark:text-zinc-400">Loading…</p>}
+                {isError && (
+                    <p className="text-sm text-red-600 dark:text-red-400">Failed to load {title.toLowerCase()}.</p>
+                )}
+                {data && (
+                    <PaginatedList
+                        data={data}
+                        currentPage={currentPage}
+                        search={searchStr}
+                        renderItem={renderItem}
+                    />
+                )}
             </main>
+        )
+    }
+
+    return function ResourceListPage() {
+        return (
+            <Suspense>
+                <ResourceList />
+            </Suspense>
         )
     }
 }
