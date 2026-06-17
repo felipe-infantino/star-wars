@@ -32,9 +32,9 @@ export function ProductionTestFetch({ path = '/people/?page=1' }) {
       })
   }, [path])
 
-  console.log("status", status)
-  console.log("httpStatus", httpStatus)
-  console.log("body", body)
+  console.log("[ProductionTestFetch] status", status)
+  console.log("[ProductionTestFetch] httpStatus", httpStatus)
+  console.log("[ProductionTestFetch] body", body)
 
   return (
     <></>
