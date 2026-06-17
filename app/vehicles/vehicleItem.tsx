@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import { Vehicle } from "./types";
 import { sanitizeProp } from '@/lib/sanitize'
+import { parseResourceId } from '@/lib/resourceId'
 
 export const vehicleItem = (vehicle: Vehicle) => {
-    const id = vehicle.url.split('/').filter(Boolean).pop()
+    const id = parseResourceId(vehicle.url)
     return (
         <Link href={`/vehicles/${id}`} className="block rounded-lg border border-black/8 bg-white p-4 transition-colors hover:bg-zinc-50 dark:border-white/[.145] dark:bg-zinc-900 dark:hover:bg-zinc-800">
             <p className="font-semibold">{sanitizeProp(vehicle.name, 'Unknown vehicle')}</p>
