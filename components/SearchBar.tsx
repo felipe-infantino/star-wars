@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDebounce } from '@/hooks/useDebounce'
 
 export default function SearchBar({ defaultValue = '' }: { defaultValue?: string }) {
@@ -11,10 +11,14 @@ export default function SearchBar({ defaultValue = '' }: { defaultValue?: string
   const debouncedQuery = useDebounce(query, 500)
 
   useEffect(() => {
+    // Only navigate when the user actually changes the query. On mount (and on
+    // pagination, which re-renders with the same search) the values match, so we
+    // leave the URL — and its ?page — untouched.
+    if (debouncedQuery === defaultValue) return
     const params = new URLSearchParams()
     if (debouncedQuery) params.set('search', debouncedQuery)
     router.push(`${pathname}${params.size ? `?${params}` : ''}`)
-  }, [debouncedQuery, pathname, router])
+  }, [debouncedQuery, defaultValue, pathname, router])
 
   return (
     <div className="mb-8 flex gap-2">
