@@ -12,7 +12,7 @@ import { ResourceUrl } from '@/app/types'
 type Relation<T> = {
     label: string
     getUrls: (resource: T) => ResourceUrl[]
-    renderItem: (item: never) => React.ReactNode
+    renderItem: (item: T) => React.ReactNode
 }
 
 type Config<T> = {
@@ -31,7 +31,8 @@ function groupByCounts<T>(items: T[], counts: number[]): T[][] {
     return counts.map((count) => items.slice(offset, (offset += count)))
 }
 
-export const createResourceDetailPage = <T,>({ path, getTitle, getProps, getDescription, relations }: Config<T>) => () => {
+export const createResourceDetailPage = <T,>({ path, getTitle, getProps, getDescription, relations }: Config<T>) => {
+  const ResourceDetailPage = () => {
     const { id } = useParams<{ id: string }>()
     const { data: resource, isLoading, isError } = useSwapiResource<T>(`${BASE_URL}${path}${id}/`)
 
@@ -88,4 +89,7 @@ export const createResourceDetailPage = <T,>({ path, getTitle, getProps, getDesc
             </div>
         </main>
     )
+  }
+
+  return ResourceDetailPage
 }

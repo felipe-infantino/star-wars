@@ -40,10 +40,12 @@ export const createResourceListPage = <T,>({ title, path, renderItem }: Config<T
         )
     }
 
-    return () => (
+    const ResourceListPage = () => (
         <Suspense fallback={<Loading />}>
             <ResourceList />
         </Suspense>
     )
+
+    return ResourceListPage
 }
 
