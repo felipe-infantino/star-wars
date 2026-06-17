@@ -13,15 +13,14 @@ type Config<T> = {
     renderItem: (item: T) => React.ReactNode
 }
 
-export function createResourceListPage<T>({ title, path, renderItem }: Config<T>) {
-    function ResourceList() {
-        const searchParams = useSearchParams()
-        const currentPage = Number(searchParams.get('page') ?? '1')
-        const searchStr = searchParams.get('search') ?? undefined
+export const createResourceListPage = <T,>({ title, path, renderItem }: Config<T>) => () => {
+    const searchParams = useSearchParams()
+    const currentPage = Number(searchParams.get('page') ?? '1')
+    const searchStr = searchParams.get('search') ?? undefined
 
-        const { data, isLoading, isError } = useSwapiList<T>(path, currentPage, searchStr)
-
-        return (
+    const { data, isLoading, isError } = useSwapiList<T>(path, currentPage, searchStr)
+    return (
+        <Suspense>
             <main className="mx-auto w-full max-w-3xl px-6 py-12">
                 <h1 className="mb-8 text-3xl font-semibold tracking-tight">{title}</h1>
                 <SearchBar defaultValue={searchStr} />
@@ -38,14 +37,7 @@ export function createResourceListPage<T>({ title, path, renderItem }: Config<T>
                     />
                 )}
             </main>
-        )
-    }
-
-    return function ResourceListPage() {
-        return (
-            <Suspense>
-                <ResourceList />
-            </Suspense>
-        )
-    }
+        </Suspense>
+    )
 }
+

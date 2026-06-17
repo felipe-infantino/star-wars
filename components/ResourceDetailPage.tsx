@@ -23,78 +23,69 @@ type Config<T> = {
     relations: Relation<T>[]
 }
 
-export function createResourceDetailPage<T>({
-    path,
-    getTitle,
-    getProps,
-    getDescription,
-    relations,
-}: Config<T>) {
-    return function ResourceDetailPage() {
-        const { id } = useParams<{ id: string }>()
-        const {
-            data: resource,
-            isLoading,
-            isError,
-        } = useSwapiResource<T>(`${BASE_URL}${path}${id}/`)
+// Relation resources are fetched in one flat batch (e.g. a Person's Starships +
+// Vehicles + Films combined). Split that flat list back into one contiguous group
+// per relation, using each relation's url count as its slice length.
+function groupByCounts<T>(items: T[], counts: number[]): T[][] {
+    let offset = 0
+    return counts.map((count) => items.slice(offset, (offset += count)))
+}
 
-        // Fan out all relation URLs in one batch, then slice results back per relation.
-        const relationUrls = resource ? relations.map((rel) => rel.getUrls(resource)) : []
-        const flatUrls = relationUrls.flat()
-        const { items, isLoading: relationsLoading } = useSwapiResources<unknown>(flatUrls)
+export const createResourceDetailPage = <T,>({ path, getTitle, getProps, getDescription, relations }: Config<T>) => () => {
+    const { id } = useParams<{ id: string }>()
+    const { data: resource, isLoading, isError } = useSwapiResource<T>(`${BASE_URL}${path}${id}/`)
 
-        if (isLoading) {
-            return (
-                <main className="mx-auto w-full max-w-3xl px-6 py-12">
-                    <Loading />
-                </main>
-            )
-        }
+    // Fan out all relation URLs in one batch, then slice results back per relation.
+    const relationUrls = resource ? relations.map((rel) => rel.getUrls(resource)) : []
+    const { items, isLoading: relationsLoading } = useSwapiResources(relationUrls.flat())
 
-        if (isError || !resource) {
-            return (
-                <main className="mx-auto w-full max-w-3xl px-6 py-12">
-                    <BackButton />
-                    <p className="mt-4 text-sm text-red-600 dark:text-red-400">
-                        Could not load this resource. It may not exist.
-                    </p>
-                </main>
-            )
-        }
-
-        let cursor = 0
-        const description = getDescription?.(resource)
-
+    if (isLoading) {
         return (
             <main className="mx-auto w-full max-w-3xl px-6 py-12">
-                <BackButton />
-
-                <h1 className="mt-4 text-4xl font-bold tracking-tight">{getTitle(resource)}</h1>
-
-                {description && (
-                    <p className="mt-4 whitespace-pre-line text-sm text-zinc-500 dark:text-zinc-400">
-                        {description}
-                    </p>
-                )}
-
-                <PropsGrid fields={getProps(resource)} />
-
-                <div className="mt-10 space-y-3">
-                    {relations.map((rel, i) => {
-                        const count = relationUrls[i].length
-                        const slice = items.slice(cursor, cursor + count)
-                        cursor += count
-                        return (
-                            <ResourceAccordion
-                                key={rel.label}
-                                label={rel.label}
-                                items={relationsLoading ? [] : slice}
-                                renderItem={rel.renderItem as (item: unknown) => React.ReactNode}
-                            />
-                        )
-                    })}
-                </div>
+                <Loading />
             </main>
         )
     }
+
+    if (isError || !resource) {
+        return (
+            <main className="mx-auto w-full max-w-3xl px-6 py-12">
+                <BackButton />
+                <p className="mt-4 text-sm text-red-600 dark:text-red-400">
+                    Could not load this resource. It may not exist.
+                </p>
+            </main>
+        )
+    }
+    const description = getDescription?.(resource)
+    const relationItems = relationsLoading
+        ? relations.map(() => [])
+        : groupByCounts(items, relationUrls.map((urls) => urls.length))
+
+    return (
+        <main className="mx-auto w-full max-w-3xl px-6 py-12">
+            <BackButton />
+
+            <h1 className="mt-4 text-4xl font-bold tracking-tight">{getTitle(resource)}</h1>
+
+            {description && (
+                <p className="mt-4 whitespace-pre-line text-sm text-zinc-500 dark:text-zinc-400">
+                    {description}
+                </p>
+            )}
+
+            <PropsGrid fields={getProps(resource)} />
+
+            <div className="mt-10 space-y-3">
+                {relations.map((rel, i) => (
+                    <ResourceAccordion
+                        key={rel.label}
+                        label={rel.label}
+                        items={relationItems[i]}
+                        renderItem={rel.renderItem as (item: unknown) => React.ReactNode}
+                    />
+                ))}
+            </div>
+        </main>
+    )
 }

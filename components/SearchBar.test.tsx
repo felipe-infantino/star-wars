@@ -24,11 +24,11 @@ describe('SearchBar', () => {
     expect(screen.getByPlaceholderText('Search…')).toHaveValue('luke')
   })
 
-  it('does navigate on mount, preserving deep-linked params like ?page=2', () => {
+  it('does not navigate on mount, preserving deep-linked params like ?page=2', () => {
     render(<SearchBar defaultValue="luke" />)
     act(() => vi.advanceTimersByTime(500))
 
-    expect(push).toHaveBeenCalled()
+    expect(push).not.toHaveBeenCalled()
   })
 
   it('does not navigate with the new query before the debounce delay elapses', () => {
